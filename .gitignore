@@ -1,0 +1,21 @@
+# Empaquetado de capturas (las imágenes ya están en capts/ y memoria/capts/)
+capts.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# LaTeX (artefactos de compilación)
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.synctex.gz
+*.fdb_latexmk
+*.fls
