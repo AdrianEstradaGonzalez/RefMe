@@ -56,7 +56,6 @@ export async function render(root) {
       <div class="toolbar" style="margin-top:18px;margin-bottom:0;align-items:flex-end">
         <div><label>Desde</label><input id="desde" type="date" value="${estado.desde}"></div>
         <div><label>Hasta</label><input id="hasta" type="date" value="${estado.hasta}"></div>
-        <div><label>Tiempo máx. (s)</label><input id="segs" type="number" min="1" max="120" value="15" style="width:100px"></div>
         <div class="spacer"></div>
         <button class="btn btn-danger" id="limpiar">${icon("trash")} Eliminar designaciones</button>
         <button class="btn btn-ghost" id="publicar" disabled>${icon("check")} Publicar</button>
@@ -225,7 +224,7 @@ export async function render(root) {
       const r = await api.generar({
         fecha_desde: estado.desde,
         fecha_hasta: estado.hasta,
-        segundos_max: parseFloat($("#segs").value) || 15,
+        segundos_max: 15,
         partido_ids: [...estado.seleccion],
       });
       estado.preview = r;
@@ -331,11 +330,6 @@ function itinerarioHtml(tramos) {
 // ---------------------------------------------------------------- Métricas
 function panelMetricas(r) {
   const m = r.metricas;
-  const manual = m.manual || {};
-  const dkm = manual.km_medio > 0
-    ? Math.round(((m.km_medio - manual.km_medio) / manual.km_medio) * 100) : null;
-  const signo = dkm !== null && dkm <= 0 ? "" : "+";
-  const colorDelta = dkm !== null && dkm <= 0 ? "var(--green)" : "var(--red)";
   const c = m.carga || {};
   const stat = (label, value, sub) => `
     <div class="card stat">
@@ -349,8 +343,6 @@ function panelMetricas(r) {
       <div class="cards grid-4" style="margin-bottom:16px">
         ${stat("Cobertura", `${m.cobertura_pct}%`, `${m.roles_cubiertos}/${m.roles_totales} roles`)}
         ${stat("Km totales", m.km_total.toLocaleString("es-ES"), `${m.km_medio} km/asignación`)}
-        ${stat("vs. manual", dkm !== null ? `<span style="color:${colorDelta}">${signo}${dkm}%</span>` : "—",
-          manual.km_medio ? `manual: ${manual.km_medio} km/asig.` : "sin referencia")}
         ${stat("Árbitros usados", c.arbitros_usados ?? 0, `carga ${c.min}–${c.max} · media ${c.media}`)}
       </div>
       <div class="card card-pad">
